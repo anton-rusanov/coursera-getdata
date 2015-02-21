@@ -1,15 +1,5 @@
 run.analysis <- function(download.data = FALSE) {
-  oldWorkingDirectory <- getwd()
-  tryCatch(run.analysis.unhandled(download.data), finally = setwd(oldWorkingDirectory))
-}
-
-run.analysis.unhandled <- function(download.data) {
   print("Started")
-  if(!file.exists("./coursera-getdata-anton-rusanov")) {
-    dir.create("./coursera-getdata-anton-rusanov")
-  }
-  setwd("./coursera-getdata-anton-rusanov")
-  print("Set working directory")
   if (download.data) {
     originalDatasetUrl <- "http://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
     tempZipFile <- tempfile(pattern="UCI-HAR-Dataset", tmpdir = ".", fileext = ".zip")
@@ -23,7 +13,7 @@ run.analysis.unhandled <- function(download.data) {
   features <- read.table("UCI HAR Dataset/features.txt")
   meanStdFeatureIndices <- grep("-mean\\(\\)|-std\\(\\)", features$V2)
   meanStdFeatureNames<- grep("-mean\\(\\)|-std\\(\\)", features$V2, value = TRUE)
-  print("Got feature indices and names")
+  print("Got -mean() and -std() features' indices and names")
   
   print("Reading test data...")
   dataTest <- read.table("UCI HAR Dataset/test/X_test.txt")
@@ -33,7 +23,6 @@ run.analysis.unhandled <- function(download.data) {
   dataMerged <- merge(dataTest, dataTrain, all=TRUE)
   print("Merged data")
   dataMeanAndStd <- dataMerged[, meanStdFeatureIndices]
-  #colnames(dataMeanAndStd) <- meanStdFeatureNames
   
   print("Reading labels...")
   labelsTest <- read.table("UCI HAR Dataset/test/y_test.txt")
@@ -57,7 +46,6 @@ run.analysis.unhandled <- function(download.data) {
   meltedData = melt(dataLabels, id = c("subject", "activity_label"))
   tidyData <- dcast(meltedData, formula = ...  ~ variable, mean)
   print("Calculated means")
-  write.table(tidyData, file = "../tidyDataset.txt")
+  write.table(tidyData, file = "tidyDataset.txt")
   print("Done")
 }
-
