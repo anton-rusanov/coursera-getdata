@@ -55,6 +55,8 @@ run.analysis <- function(download.data = FALSE) {
   meltedData = melt(dataLabels, id = c("subject", "activity_label"))
   tidyData <- dcast(meltedData, formula = ...  ~ variable, mean)
   print("Calculated means")
-  write.table(tidyData, file = "tidyDataset.txt")
+  # Exporting with row.name=FALSE as specified at Peer Assessments page:
+  # https://class.coursera.org/getdata-011/human_grading/view/courses/973498/assessments/3/submissions
+  write.table(tidyData, file = "tidyDataset.txt", row.name=FALSE)
   print("Done")
 }
